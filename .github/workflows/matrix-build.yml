@@ -1,0 +1,39 @@
+name: Matrix Build - f21534f
+
+on:
+  push:
+    branches: [ main ]
+  pull_request:
+  workflow_dispatch: {}  # allows manual run
+
+jobs:
+  build:
+    strategy:
+      matrix:
+        node-version: [14, 16, 18]
+        os: [ubuntu-latest]
+    runs-on: ${{ matrix.os }}
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: matrix-f21534f
+        run: echo "Building for Node.js version ${{ matrix.node-version }} on ${{ matrix.os }}"
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ matrix.node-version }}
+
+      - name: Generate build artifact
+        run: |
+          echo "Build output for Node.js version ${{ matrix.node-version }} on ${{ matrix.os }}" > build-output.txt
+          echo "Timestamp: $(date)" >> build-output.txt
+          echo "Build successful ✅" >> build-output.txt
+
+      - name: Upload artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: build-f21534f-v${{ matrix.node-version }}
+          path: build-output.txt
